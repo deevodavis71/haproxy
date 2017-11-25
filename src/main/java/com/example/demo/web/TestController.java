@@ -15,8 +15,10 @@ public class TestController {
 
     @RequestMapping("/test")
     public String test() {
-        System.out.println (new java.util.Date() + " ... got a call");
+
+        System.out.println(new java.util.Date() + " ... got a call");
         return "Hello World!";
+
     }
 
 }
