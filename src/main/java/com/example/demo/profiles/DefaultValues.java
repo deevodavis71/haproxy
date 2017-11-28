@@ -8,7 +8,7 @@ package com.example.demo.profiles;
  */
 public class DefaultValues {
 
-    public final static String NAME = "Steve";
+    public static String NAME = "Steve";
 
     public static String doIt() {
         return "42";
