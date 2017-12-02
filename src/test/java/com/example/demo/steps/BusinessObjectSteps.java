@@ -1,6 +1,7 @@
-package com.example.demo;
+package com.example.demo.steps;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,8 +66,16 @@ public class BusinessObjectSteps {
 
     }
 
+    @Then("^the average salary for employees of department (.*) will be (\\d*)$")
+    public void testAverageSalary(String dept, int averageSalary) {
+
+        assertNotNull(hrSystem.getSalaries().get(dept));
+        assertEquals(averageSalary, hrSystem.getSalaries().get(dept).intValue());
+
+    }
+
     @Then("^the salary bill should be (\\d*) for department (.*)$")
-    public void testBusinessObject(int salaryBill, String dept) {
+    public void testSalaryBill(int salaryBill, String dept) {
 
         assertEquals(salaryBill, bob.getNumEmployees() * hrSystem.getSalaries().get(dept));
         assertEquals(dept, bob.getDeptName());
