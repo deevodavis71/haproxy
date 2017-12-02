@@ -11,7 +11,7 @@ Feature: Check HR System Salary Information
   Scenario: Request Salary Information for an unknown department
 
     When I request the average salary for employees of an unknown department
-    Then the error "Missing Salary Details" will be logged
+    Then the error Missing Salary Details will be logged
 
   Scenario Outline: Check Average Salary Information using provided values
 
@@ -24,4 +24,4 @@ Feature: Check HR System Salary Information
 
   Scenario: Check Logged Audit Information
 
-    * check "Missing Salary Details" error has been logged
+    * check Missing Salary Details error has been logged
