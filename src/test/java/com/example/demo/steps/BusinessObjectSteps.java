@@ -28,13 +28,15 @@ public class BusinessObjectSteps {
     @Mock
     private AuditLogSystem auditSystem;
 
+    static private List<String> audits = new ArrayList<>(); // Only required to mock up audit system log events
+
     private BusinessDepartment department;
 
-    static private List<String> audits = new ArrayList<>();
-
-    @Before
+    @Before // Note that this is the Cucumber annotation, not the JUnit one
     public void Before() {
 
+        // We need to call this to initialise mocks, as we aren't able to run under the
+        // Mockito JUnit runner as we have to use the Cucumber runner instead
         MockitoAnnotations.initMocks(this);
 
         // Mock that the integration to the HR system has worked
