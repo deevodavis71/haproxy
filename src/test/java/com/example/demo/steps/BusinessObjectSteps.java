@@ -58,7 +58,7 @@ public class BusinessObjectSteps {
 
     }
 
-    @When("^I request the average salary for employees of a missing department$")
+    @When("^I request the average salary for employees of an unknown department$")
     public void missingDepartment() {
 
         assertNull(hrSystem.getSalaries().get("Missing"));
@@ -72,7 +72,7 @@ public class BusinessObjectSteps {
 
     }
 
-    @Given("^I have a department$")
+    @Given("^I want to check a department$")
     public void initialiseDepartment() {
 
         department = new BusinessDepartment();
@@ -108,7 +108,7 @@ public class BusinessObjectSteps {
 
     }
 
-    @Then("^the salary bill should be (\\d*) for department (.*)$")
+    @Then("^the total salary bill should be (\\d*) for the department (.*)$")
     public void testSalaryBill(int salaryBill, String dept) {
 
         assertEquals(salaryBill, department.getNumEmployees() * hrSystem.getSalaries().get(dept));

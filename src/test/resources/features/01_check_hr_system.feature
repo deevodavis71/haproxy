@@ -4,15 +4,17 @@ Feature: Check HR System Salary Information
   I want to check that all departments have salary information
   So that employees all get paid
 
-  Scenario: Request Missing Salary Information
+  Background: Runs before each scenario shown below
 
     Given employee information has been received from the HR system
-    When I request the average salary for employees of a missing department
+
+  Scenario: Request Salary Information for an unknown department
+
+    When I request the average salary for employees of an unknown department
     Then the error "Missing Salary Details" will be logged
 
   Scenario Outline: Check Average Salary Information using provided values
 
-    Given employee information has been received from the HR system
     Then the average salary for employees of department <dept> will be <avg_salary>
 
     Examples: Dept Salaries
