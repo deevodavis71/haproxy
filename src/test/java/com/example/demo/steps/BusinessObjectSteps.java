@@ -1,16 +1,19 @@
 package com.example.demo.steps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.example.demo.utils.BusinessObject;
+import com.example.demo.utils.AuditLogSystem;
+import com.example.demo.utils.BusinessDepartment;
 import com.example.demo.utils.HumanResourceSystem;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -19,29 +22,60 @@ import cucumber.api.java.en.When;
 
 public class BusinessObjectSteps {
 
-    private BusinessObject bob;
-
     @Mock
     private HumanResourceSystem hrSystem;
+
+    @Mock
+    private AuditLogSystem auditSystem;
+
+    private BusinessDepartment department;
+
+    static private List<String> audits = new ArrayList<>();
 
     @Before
     public void Before() {
 
         MockitoAnnotations.initMocks(this);
 
+        // Mock that the integration to the HR system has worked
+        // and that we have data available
         Mockito.when(hrSystem.isDataReceived()).thenReturn(true);
 
+        // Mock up the set of salaries that will come back from the
+        // HR system
         Map<String, Integer> salaries = new HashMap<>();
         salaries.put("Development", 60_000);
         salaries.put("Sales", 200_000);
         Mockito.when(hrSystem.getSalaries()).thenReturn(salaries);
 
+        // Mock up the auditing system, instead storing the audits in
+        // a locally cached list - note the difference in my mocked type (a List<String>)
+        // versus the type in the actual object (Map<Date, String>)
+        Mockito.doAnswer(invocationOnMock -> {
+            audits.add(invocationOnMock.getArgument(0));
+            return null;
+        }).when(auditSystem).addAudit(anyString());
+
     }
 
-    @Given("^I have a business object$")
-    public void initialiseBob() {
+    @When("^I request the average salary for employees of a missing department$")
+    public void missingDepartment() {
 
-        bob = new BusinessObject();
+        assertNull(hrSystem.getSalaries().get("Missing"));
+
+    }
+
+    @Then("^the error (.*) will be logged$")
+    public void logAnError(String error) {
+
+        auditSystem.addAudit(error);
+
+    }
+
+    @Given("^I have a department$")
+    public void initialiseDepartment() {
+
+        department = new BusinessDepartment();
 
     }
 
@@ -55,14 +89,14 @@ public class BusinessObjectSteps {
     @When("^I set department name as (.*)$")
     public void setDeptName(String name) {
 
-        bob.setDeptName(name);
+        department.setDeptName(name);
 
     }
 
     @When("^I set number of employees as (\\d*)$")
     public void setDeptName(int profit) {
 
-        bob.setNumEmployees(profit);
+        department.setNumEmployees(profit);
 
     }
 
@@ -77,8 +111,16 @@ public class BusinessObjectSteps {
     @Then("^the salary bill should be (\\d*) for department (.*)$")
     public void testSalaryBill(int salaryBill, String dept) {
 
-        assertEquals(salaryBill, bob.getNumEmployees() * hrSystem.getSalaries().get(dept));
-        assertEquals(dept, bob.getDeptName());
+        assertEquals(salaryBill, department.getNumEmployees() * hrSystem.getSalaries().get(dept));
+        assertEquals(dept, department.getDeptName());
+
+    }
+
+    @Given("^check (.*) error has been logged$")
+    public void checkErrorHasBeenLogged(String audit) {
+
+        assertEquals(1, audits.size());
+        assertTrue(audits.contains(audit));
 
     }
 }
