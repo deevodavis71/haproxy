@@ -12,6 +12,6 @@ public class HumanResourceSystem {
 
     private boolean dataReceived;
 
-    private Map<String, Integer> salaries;
+    private Map<String, Integer> averageSalaries;
 
 }

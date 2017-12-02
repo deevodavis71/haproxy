@@ -46,7 +46,7 @@ public class BusinessObjectSteps {
         Map<String, Integer> salaries = new HashMap<>();
         salaries.put("Development", 60_000);
         salaries.put("Sales", 200_000);
-        Mockito.when(hrSystem.getSalaries()).thenReturn(salaries);
+        Mockito.when(hrSystem.getAverageSalaries()).thenReturn(salaries);
 
         // Mock up the auditing system, instead storing the audits in
         // a locally cached list - note the difference in my mocked type (a List<String>)
@@ -61,7 +61,7 @@ public class BusinessObjectSteps {
     @When("^I request the average salary for employees of an unknown department$")
     public void missingDepartment() {
 
-        assertNull(hrSystem.getSalaries().get("Missing"));
+        assertNull(hrSystem.getAverageSalaries().get("Missing Dept"));
 
     }
 
@@ -103,15 +103,15 @@ public class BusinessObjectSteps {
     @Then("^the average salary for employees of department (.*) will be (\\d*)$")
     public void testAverageSalary(String dept, int averageSalary) {
 
-        assertNotNull(hrSystem.getSalaries().get(dept));
-        assertEquals(averageSalary, hrSystem.getSalaries().get(dept).intValue());
+        assertNotNull(hrSystem.getAverageSalaries().get(dept));
+        assertEquals(averageSalary, hrSystem.getAverageSalaries().get(dept).intValue());
 
     }
 
     @Then("^the total salary bill should be (\\d*) for the department (.*)$")
     public void testSalaryBill(int salaryBill, String dept) {
 
-        assertEquals(salaryBill, department.getNumEmployees() * hrSystem.getSalaries().get(dept));
+        assertEquals(salaryBill, department.getNumEmployees() * hrSystem.getAverageSalaries().get(dept));
         assertEquals(dept, department.getDeptName());
 
     }
