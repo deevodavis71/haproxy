@@ -18,7 +18,7 @@ import com.example.demo.profiles.DefaultValues;
 @RequestMapping("/api")
 public class TestController {
 
-    @RequestMapping("/test")
+    @RequestMapping({"/test"})
     public String test() throws Exception {
 
         //Get the System Classloader
