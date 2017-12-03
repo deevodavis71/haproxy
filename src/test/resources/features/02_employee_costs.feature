@@ -20,3 +20,15 @@ Feature: Employee Salary Costs
     When I set department name as Sales
     And I set number of employees as 5
     Then the total salary bill should be 1000000 for the department Sales
+
+  Scenario Outline: This is exactly the same as the two scenarios above, except it use a data table
+
+    When I set department name as <dept>
+    And I set number of employees as <num_employees>
+    Then the total salary bill should be <total> for the department <dept>
+
+    Examples: Departments, Employees and Totals
+      | dept        | num_employees | total   |
+      | Development | 5             | 300000  |
+      | Sales       | 5             | 1000000 |
+
