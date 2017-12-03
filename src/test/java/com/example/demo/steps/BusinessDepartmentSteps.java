@@ -3,15 +3,17 @@ package com.example.demo.steps;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
+import com.example.demo.support.AppConfiguration;
+import com.example.demo.support.World;
 import com.example.demo.utils.AuditLogSystem;
 import com.example.demo.utils.BusinessDepartment;
 import com.example.demo.utils.HumanResourceSystem;
@@ -20,6 +22,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+@ContextConfiguration(classes = AppConfiguration.class)
 public class BusinessDepartmentSteps {
 
     @Mock
@@ -28,7 +31,8 @@ public class BusinessDepartmentSteps {
     @Mock
     private AuditLogSystem auditSystem;
 
-    static private List<String> audits = new ArrayList<>(); // Only required to mock up audit system log events
+    @Autowired
+    private World world;
 
     private BusinessDepartment department;
 
@@ -54,7 +58,7 @@ public class BusinessDepartmentSteps {
         // a locally cached list - note the difference in my mocked type (a List<String>)
         // versus the type in the actual object (Map<Date, String>)
         Mockito.doAnswer(invocationOnMock -> {
-            audits.add(invocationOnMock.getArgument(0));
+            world.getAudits().add(invocationOnMock.getArgument(0));
             return null;
         }).when(auditSystem).addAudit(anyString());
 
@@ -121,8 +125,8 @@ public class BusinessDepartmentSteps {
     @Given("^check (.*) error has been logged$")
     public void checkErrorHasBeenLogged(String audit) {
 
-        assertEquals(1, audits.size());
-        assertTrue(audits.contains(audit));
+        assertEquals(1, world.getAudits().size());
+        assertTrue(world.getAudits().contains(audit));
 
     }
 }
